@@ -1,5 +1,8 @@
 package com.jonathansamines.views;
 
+import java.awt.Color;
+import javax.swing.JFrame;
+
 /**
  * CalculatorView
  * Main view for calculator application
@@ -7,8 +10,15 @@ package com.jonathansamines.views;
  */
 public class CalculatorView extends javax.swing.JFrame {
 
-    public CalculatorView() {
+    public CalculatorView() {        
         initComponents();
+        
+        // configure layout
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(300, 450);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        this.setBackground(Color.WHITE);
     }
 
     @SuppressWarnings("unchecked")
