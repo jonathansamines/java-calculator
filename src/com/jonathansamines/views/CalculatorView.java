@@ -1,5 +1,7 @@
 package com.jonathansamines.views;
 
+import com.jonathansamines.ComputingMode;
+import com.jonathansamines.ComputingOperations;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +14,13 @@ import javax.swing.JFrame;
  * Main view for calculator application
  * @author jonathansamines
  */
-public class CalculatorView extends JFrame implements ActionListener {
+public class CalculatorView extends JFrame {
+
+    private ComputingOperations lastOperation;
+    private ComputingMode lastComputingMode;
+    private float currentEnteredNumber;
+    private float lastEnteredNumber;
+    private float lastComputedResult;
     
     public CalculatorView() {        
         initComponents();
@@ -22,15 +30,8 @@ public class CalculatorView extends JFrame implements ActionListener {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setBackground(Color.WHITE);
-    }
-
-    /**
-     * Event generated when a user generates a click
-     * @param event Event metadata
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        System.out.println("Hola mundo click");
+        
+        this.cleanComputingState();
     }
 
     @SuppressWarnings("unchecked")
@@ -349,15 +350,57 @@ public class CalculatorView extends JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private int lastEnteredNumber = 0;
-    private float lastComputedResult = 0;
     
     private void setNumberToDisplay(String number) {
-        this.lastEnteredNumber = Integer.parseInt(number);
-        String lastTextContent = this.txtDisplay.getText();
-        lastTextContent = lastTextContent.equals("0") ? "" : lastTextContent;
+        String lastTextContent = this.txtDisplay.getText().equals("0") ? "" : this.txtDisplay.getText();
 
-        this.txtDisplay.setText(lastTextContent + number);
+        // if the last operation is a number, then append to the current state
+        if (this.lastComputingMode == ComputingMode.Number) {
+            this.txtDisplay.setText(lastTextContent + number);
+            this.currentEnteredNumber = Float.parseFloat(lastTextContent + number);
+        }else {
+            this.txtDisplay.setText(number);
+            this.currentEnteredNumber = Float.parseFloat(number);
+        }
+        
+        this.lastEnteredNumber = Float.parseFloat(number);
+        this.lastComputingMode = ComputingMode.Number;
+    }
+    
+    private void clearDisplayNumber() {
+        this.txtDisplay.setText("0");
+        this.currentEnteredNumber = 0;
+    }
+    
+    private void cleanComputingState() {
+        this.clearDisplayNumber();
+        this.lastComputedResult = 0;
+        this.lastEnteredNumber = 0;
+        this.lastOperation = ComputingOperations.Compute;
+        this.lastComputingMode = ComputingMode.Number;
+    }
+    
+    private void setComputingState(ComputingOperations operation) {
+        if(ComputingOperations.Addition == this.lastOperation) {
+            this.lastComputedResult += this.currentEnteredNumber;
+        }else if(ComputingOperations.Substraction == this.lastOperation) {
+            this.lastComputedResult -= this.currentEnteredNumber;
+        }else if(ComputingOperations.Division == this.lastOperation) {
+            this.lastComputedResult /= this.currentEnteredNumber;
+        }else if(ComputingOperations.Multiply == this.lastOperation) {
+            this.lastComputedResult *= this.currentEnteredNumber;
+        }else {
+            this.lastComputedResult = this.currentEnteredNumber;
+        }
+        
+        if(this.lastComputingMode == ComputingMode.Number) {
+            this.lastComputingMode = ComputingMode.Operation;
+            this.setNumberToDisplay(Float.toString(this.lastComputedResult));
+        }
+
+        this.lastComputingMode = ComputingMode.Operation;
+        this.lastOperation = operation;
+        this.lastEnteredNumber = this.currentEnteredNumber;
     }
     
     private void btnNumber1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber1ActionPerformed
@@ -410,28 +453,27 @@ public class CalculatorView extends JFrame implements ActionListener {
     }//GEN-LAST:event_btnNumber9ActionPerformed
 
     private void btnPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlusActionPerformed
-        JButton button = (JButton) evt.getSource();
-        
+        this.setComputingState(ComputingOperations.Addition);
     }//GEN-LAST:event_btnPlusActionPerformed
 
     private void btnMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinusActionPerformed
-        // TODO add your handling code here:
+        this.setComputingState(ComputingOperations.Substraction);
     }//GEN-LAST:event_btnMinusActionPerformed
 
     private void btnMultiplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMultiplyActionPerformed
-        // TODO add your handling code here:
+        this.setComputingState(ComputingOperations.Multiply);
     }//GEN-LAST:event_btnMultiplyActionPerformed
 
     private void btnDivisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDivisionActionPerformed
-        // TODO add your handling code here:
+        this.setComputingState(ComputingOperations.Division);
     }//GEN-LAST:event_btnDivisionActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        // TODO add your handling code here:
+        this.cleanComputingState();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnComputeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComputeActionPerformed
-        // TODO add your handling code here:
+        this.setComputingState(ComputingOperations.Compute);
     }//GEN-LAST:event_btnComputeActionPerformed
 
     private void btnNumber0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber0ActionPerformed
