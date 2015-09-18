@@ -86,9 +86,6 @@
             <Property name="name" type="java.lang.String" value="txtDisplay" noResource="true"/>
             <Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtDisplayActionPerformed"/>
-          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="firstRow">
           <Properties>

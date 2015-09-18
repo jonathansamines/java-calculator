@@ -3,8 +3,6 @@ package com.jonathansamines.views;
 import com.jonathansamines.ComputingMode;
 import com.jonathansamines.ComputingOperations;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -18,7 +16,6 @@ public class CalculatorView extends JFrame {
 
     private ComputingOperations lastOperation;
     private ComputingMode lastComputingMode;
-    private float currentEnteredNumber;
     private float lastEnteredNumber;
     private float lastComputedResult;
     
@@ -83,11 +80,6 @@ public class CalculatorView extends JFrame {
         txtDisplay.setMaximumSize(null);
         txtDisplay.setName("txtDisplay"); // NOI18N
         txtDisplay.setVerifyInputWhenFocusTarget(false);
-        txtDisplay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDisplayActionPerformed(evt);
-            }
-        });
         mainPanel.add(txtDisplay);
 
         firstRow.setBackground(new java.awt.Color(255, 255, 255));
@@ -351,105 +343,102 @@ public class CalculatorView extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-    private void setNumberToDisplay(String number) {
-        String lastTextContent = this.txtDisplay.getText().equals("0") ? "" : this.txtDisplay.getText();
+    private void setNumberComputingState(String number) {
+        String lastTextContent = this.txtDisplay.getText();
 
         // if the last operation is a number, then append to the current state
         if (this.lastComputingMode == ComputingMode.Number) {
             this.txtDisplay.setText(lastTextContent + number);
-            this.currentEnteredNumber = Float.parseFloat(lastTextContent + number);
+            this.lastEnteredNumber = Float.parseFloat(lastTextContent + number);
         }else {
             this.txtDisplay.setText(number);
-            this.currentEnteredNumber = Float.parseFloat(number);
+            this.lastEnteredNumber = Float.parseFloat(number);
         }
-        
-        this.lastEnteredNumber = Float.parseFloat(number);
+
         this.lastComputingMode = ComputingMode.Number;
     }
     
     private void clearDisplayNumber() {
         this.txtDisplay.setText("0");
-        this.currentEnteredNumber = 0;
+        this.lastEnteredNumber = 0;
     }
     
     private void cleanComputingState() {
         this.clearDisplayNumber();
         this.lastComputedResult = 0;
-        this.lastEnteredNumber = 0;
         this.lastOperation = ComputingOperations.Compute;
-        this.lastComputingMode = ComputingMode.Number;
+        this.lastComputingMode = ComputingMode.Operation;
     }
     
     private void setComputingState(ComputingOperations operation) {
-        if(ComputingOperations.Addition == this.lastOperation) {
-            this.lastComputedResult += this.currentEnteredNumber;
-        }else if(ComputingOperations.Substraction == this.lastOperation) {
-            this.lastComputedResult -= this.currentEnteredNumber;
-        }else if(ComputingOperations.Division == this.lastOperation) {
-            this.lastComputedResult /= this.currentEnteredNumber;
-        }else if(ComputingOperations.Multiply == this.lastOperation) {
-            this.lastComputedResult *= this.currentEnteredNumber;
-        }else {
-            this.lastComputedResult = this.currentEnteredNumber;
+        // if the last operation is an "operation" only change the lastOperation state
+        if(this.lastComputingMode == ComputingMode.Operation) {
+            this.lastOperation = operation;
+            return;
         }
         
-        if(this.lastComputingMode == ComputingMode.Number) {
-            this.lastComputingMode = ComputingMode.Operation;
-            this.setNumberToDisplay(Float.toString(this.lastComputedResult));
+        // if the last operation was a number, then compute the result
+        if(ComputingOperations.Addition == this.lastOperation) {
+            this.lastComputedResult += this.lastEnteredNumber;
+        }else if(ComputingOperations.Substraction == this.lastOperation) {
+            this.lastComputedResult -= this.lastEnteredNumber;
+        }else if(ComputingOperations.Division == this.lastOperation) {
+            this.lastComputedResult /= this.lastEnteredNumber;
+        }else if(ComputingOperations.Multiply == this.lastOperation) {
+            this.lastComputedResult *= this.lastEnteredNumber;
+        }else {
+            this.lastComputedResult = this.lastEnteredNumber;
         }
-
-        this.lastComputingMode = ComputingMode.Operation;
+        
         this.lastOperation = operation;
-        this.lastEnteredNumber = this.currentEnteredNumber;
+        this.lastComputingMode = ComputingMode.Operation;
+        this.setNumberComputingState(Float.toString(this.lastComputedResult));
+        this.lastComputingMode = ComputingMode.Operation;
     }
     
     private void btnNumber1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber1ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber1ActionPerformed
-
-    private void txtDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDisplayActionPerformed
-
-    }//GEN-LAST:event_txtDisplayActionPerformed
 
     private void btnNumber2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber2ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber2ActionPerformed
 
     private void btnNumber3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber3ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber3ActionPerformed
 
     private void btnNumber4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber4ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber4ActionPerformed
 
     private void btnNumber5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber5ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber5ActionPerformed
 
     private void btnNumber6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber6ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber6ActionPerformed
 
     private void btnNumber7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber7ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber7ActionPerformed
 
     private void btnNumber8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber8ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber8ActionPerformed
 
     private void btnNumber9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber9ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber9ActionPerformed
 
     private void btnPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlusActionPerformed
@@ -478,7 +467,7 @@ public class CalculatorView extends JFrame {
 
     private void btnNumber0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber0ActionPerformed
         JButton button = (JButton)evt.getSource();
-        this.setNumberToDisplay(button.getText());
+        this.setNumberComputingState(button.getText());
     }//GEN-LAST:event_btnNumber0ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
