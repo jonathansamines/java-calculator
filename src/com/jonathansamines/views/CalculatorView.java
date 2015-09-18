@@ -3,6 +3,7 @@ package com.jonathansamines.views;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 
@@ -37,7 +38,7 @@ public class CalculatorView extends JFrame implements ActionListener {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        txtDisplay = new javax.swing.JTextField();
         firstRow = new javax.swing.JPanel();
         btnNumber1 = new javax.swing.JButton();
         btnNumber2 = new javax.swing.JButton();
@@ -54,9 +55,10 @@ public class CalculatorView extends JFrame implements ActionListener {
         btnNumber9 = new javax.swing.JButton();
         btnMultiply = new javax.swing.JButton();
         fourthRow = new javax.swing.JPanel();
-        btnDivision = new javax.swing.JButton();
+        btnNumber0 = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         btnCompute = new javax.swing.JButton();
+        btnDivision = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calculadora");
@@ -73,18 +75,19 @@ public class CalculatorView extends JFrame implements ActionListener {
         mainPanel.setPreferredSize(new java.awt.Dimension(0, 0));
         mainPanel.setLayout(new java.awt.GridLayout(5, 5));
 
-        jTextField1.setEditable(false);
-        jTextField1.setFont(new java.awt.Font("Monospaced", 0, 24)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField1.setText("00.00");
-        jTextField1.setName("txtDisplay"); // NOI18N
-        jTextField1.setVerifyInputWhenFocusTarget(false);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtDisplay.setEditable(false);
+        txtDisplay.setFont(new java.awt.Font("Monospaced", 0, 24)); // NOI18N
+        txtDisplay.setForeground(new java.awt.Color(102, 102, 102));
+        txtDisplay.setText("0");
+        txtDisplay.setMaximumSize(null);
+        txtDisplay.setName("txtDisplay"); // NOI18N
+        txtDisplay.setVerifyInputWhenFocusTarget(false);
+        txtDisplay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtDisplayActionPerformed(evt);
             }
         });
-        mainPanel.add(jTextField1);
+        mainPanel.add(txtDisplay);
 
         firstRow.setBackground(new java.awt.Color(255, 255, 255));
         firstRow.setLayout(new java.awt.GridLayout(1, 4));
@@ -272,19 +275,19 @@ public class CalculatorView extends JFrame implements ActionListener {
         fourthRow.setBackground(new java.awt.Color(255, 255, 255));
         fourthRow.setLayout(new java.awt.GridLayout(1, 4));
 
-        btnDivision.setBackground(new java.awt.Color(255, 255, 255));
-        btnDivision.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
-        btnDivision.setForeground(new java.awt.Color(102, 102, 102));
-        btnDivision.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnDivision.setLabel("/");
-        btnDivision.setName("txtButtonNumber1"); // NOI18N
-        btnDivision.setVerifyInputWhenFocusTarget(false);
-        btnDivision.addActionListener(new java.awt.event.ActionListener() {
+        btnNumber0.setBackground(new java.awt.Color(255, 255, 255));
+        btnNumber0.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
+        btnNumber0.setForeground(new java.awt.Color(102, 102, 102));
+        btnNumber0.setText("0");
+        btnNumber0.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnNumber0.setName("txtButtonNumber1"); // NOI18N
+        btnNumber0.setVerifyInputWhenFocusTarget(false);
+        btnNumber0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDivisionActionPerformed(evt);
+                btnNumber0ActionPerformed(evt);
             }
         });
-        fourthRow.add(btnDivision);
+        fourthRow.add(btnNumber0);
 
         btnClear.setBackground(new java.awt.Color(255, 255, 255));
         btnClear.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
@@ -314,6 +317,20 @@ public class CalculatorView extends JFrame implements ActionListener {
         });
         fourthRow.add(btnCompute);
 
+        btnDivision.setBackground(new java.awt.Color(255, 255, 255));
+        btnDivision.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
+        btnDivision.setForeground(new java.awt.Color(102, 102, 102));
+        btnDivision.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnDivision.setLabel("/");
+        btnDivision.setName("txtButtonNumber1"); // NOI18N
+        btnDivision.setVerifyInputWhenFocusTarget(false);
+        btnDivision.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDivisionActionPerformed(evt);
+            }
+        });
+        fourthRow.add(btnDivision);
+
         mainPanel.add(fourthRow);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -332,48 +349,69 @@ public class CalculatorView extends JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private int lastEnteredNumber = 0;
+    private float lastComputedResult = 0;
+    
+    private void setNumberToDisplay(String number) {
+        this.lastEnteredNumber = Integer.parseInt(number);
+        String lastTextContent = this.txtDisplay.getText();
+        lastTextContent = lastTextContent.equals("0") ? "" : lastTextContent;
+
+        this.txtDisplay.setText(lastTextContent + number);
+    }
+    
     private void btnNumber1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber1ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber1ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void txtDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDisplayActionPerformed
+
+    }//GEN-LAST:event_txtDisplayActionPerformed
 
     private void btnNumber2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber2ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber2ActionPerformed
 
     private void btnNumber3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber3ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber3ActionPerformed
 
     private void btnNumber4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber4ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber4ActionPerformed
 
     private void btnNumber5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber5ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber5ActionPerformed
 
     private void btnNumber6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber6ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber6ActionPerformed
 
     private void btnNumber7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber7ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber7ActionPerformed
 
     private void btnNumber8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber8ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber8ActionPerformed
 
     private void btnNumber9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber9ActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
     }//GEN-LAST:event_btnNumber9ActionPerformed
 
     private void btnPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlusActionPerformed
-        // TODO add your handling code here:
+        JButton button = (JButton) evt.getSource();
+        
     }//GEN-LAST:event_btnPlusActionPerformed
 
     private void btnMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinusActionPerformed
@@ -396,12 +434,18 @@ public class CalculatorView extends JFrame implements ActionListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnComputeActionPerformed
 
+    private void btnNumber0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNumber0ActionPerformed
+        JButton button = (JButton)evt.getSource();
+        this.setNumberToDisplay(button.getText());
+    }//GEN-LAST:event_btnNumber0ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JButton btnClear;
     protected javax.swing.JButton btnCompute;
     protected javax.swing.JButton btnDivision;
     protected javax.swing.JButton btnMinus;
     protected javax.swing.JButton btnMultiply;
+    protected javax.swing.JButton btnNumber0;
     protected javax.swing.JButton btnNumber1;
     protected javax.swing.JButton btnNumber2;
     protected javax.swing.JButton btnNumber3;
@@ -414,9 +458,9 @@ public class CalculatorView extends JFrame implements ActionListener {
     protected javax.swing.JButton btnPlus;
     protected javax.swing.JPanel firstRow;
     protected javax.swing.JPanel fourthRow;
-    protected javax.swing.JTextField jTextField1;
     protected javax.swing.JPanel mainPanel;
     protected javax.swing.JPanel secondRow;
     protected javax.swing.JPanel thirdRow;
+    protected javax.swing.JTextField txtDisplay;
     // End of variables declaration//GEN-END:variables
 }
